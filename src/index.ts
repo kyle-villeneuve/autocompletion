@@ -7,6 +7,6 @@
  * For small projects you could put all your code right in this file.
  */
 
-import { AutoComplete } from "@/AutoComplete";
+import { AutoComplete } from '@/AutoComplete';
 
 export default AutoComplete;

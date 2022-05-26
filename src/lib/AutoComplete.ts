@@ -1,4 +1,4 @@
-import { Trie } from "./Trie";
+import { Trie } from './Trie';
 
 export class AutoComplete {
   root = new Trie();
@@ -28,10 +28,10 @@ export class AutoComplete {
     words.forEach(this.seed);
   }
 
-  print(node = this.root, prefix = "") {
+  print(node = this.root, prefix = '') {
     const words: string[] = [];
 
-    function traverse(trie: Trie, accumulation = "") {
+    function traverse(trie: Trie, accumulation = '') {
       if (trie.end) words.push(accumulation);
 
       for (const edge of Object.values(trie.edges)) {
