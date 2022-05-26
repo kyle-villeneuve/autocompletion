@@ -7,5 +7,6 @@
  * For small projects you could put all your code right in this file.
  */
 
-export * from './lib/sample-module.js';
-export default undefined;
+import { AutoComplete } from "@/AutoComplete";
+
+export default AutoComplete;
