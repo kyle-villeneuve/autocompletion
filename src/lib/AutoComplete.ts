@@ -1,41 +1,54 @@
-import { Trie } from './Trie';
+import { Trie, trie } from './Trie';
+import { sanitize } from './utils';
 
-export class AutoComplete {
-  root = new Trie();
+export class AutoComplete<T = never> {
+  root = trie<T>();
 
-  seed = (word: string) => {
+  seed = (word: string, meta: T) => {
     let currentNode = this.root;
+    const sanitized = sanitize(word);
 
     let i = 0;
 
-    while (i < word.length) {
-      const char = word[i];
-      let edge = currentNode.edges[char];
+    while (i < sanitized.length) {
+      const char = sanitized[i];
+      let edge = currentNode[char];
 
       if (!edge) {
-        edge = new Trie(char);
-        currentNode.edges[char] = edge;
+        edge = trie();
+        currentNode[char] = edge;
       }
 
       currentNode = edge;
       i++;
     }
 
-    currentNode.end = true;
+    if (meta) currentNode._m = meta;
+    currentNode._e = true;
   };
 
-  seedMany(...words: string[]) {
-    words.forEach(this.seed);
+  seedMany(...words: [string, T][]) {
+    words.forEach(([word, meta]) => this.seed(word, meta));
+  }
+
+  seedProse(str: string, meta: T) {
+    str.split(/\.|\?|!/g).forEach((sentence) => {
+      sentence.replace(/\s+/g, (_space, index) => {
+        const partial = sentence.slice(index).trim();
+        partial && this.seed(partial, meta);
+        return '';
+      });
+    });
   }
 
   print(node = this.root, prefix = '') {
-    const words: string[] = [];
+    const words: [string, T?][] = [];
 
-    function traverse(trie: Trie, accumulation = '') {
-      if (trie.end) words.push(accumulation);
+    function traverse({ _e, _m, ...leafs }: Trie<T>, accumulation = '') {
+      if (_e) words.push([accumulation, _m]);
 
-      for (const edge of Object.values(trie.edges)) {
-        traverse(edge, accumulation + edge.value);
+      for (const [key, edge] of Object.entries(leafs)) {
+        traverse(edge, accumulation + key);
       }
     }
 
@@ -50,7 +63,7 @@ export class AutoComplete {
 
     while (i < query.length) {
       const char = query[i];
-      currentNode = currentNode.edges[char];
+      currentNode = currentNode[char];
       if (!currentNode) return [];
       i++;
     }

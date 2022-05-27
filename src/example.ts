@@ -1,18 +1,18 @@
 import AutoComplete from './';
 
-const ac = new AutoComplete();
+const ac = new AutoComplete<void>();
 
 ac.seedMany(
-  'cat',
-  'dog',
-  'car',
-  'card',
-  'cart',
-  'camel',
-  'catty',
-  'catharsis',
-  'cathedral',
-  'cataract',
+  ['cat', undefined],
+  ['dog', undefined],
+  ['car', undefined],
+  ['card', undefined],
+  ['cart', undefined],
+  ['camel', undefined],
+  ['catty', undefined],
+  ['catharsis', undefined],
+  ['cathedral', undefined],
+  ['cataract', undefined],
 );
 
-ac.complete('car');
+console.log(ac.complete('car'));
